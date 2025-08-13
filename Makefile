@@ -1,6 +1,6 @@
 name = Jenkins
 
-NO_COLOR=\033[0m	# Color Reset
+NO_COLOR=\033[0m		# Color Reset
 COLOR_OFF='\e[0m'       # Color Off
 OK_COLOR=\033[32;01m	# Green Ok
 ERROR_COLOR=\033[31;01m	# Error red
@@ -25,18 +25,8 @@ help:
 	@echo -e "$(WARN_COLOR)- make				: Launch configuration"
 	@echo -e "$(WARN_COLOR)- make build			: Building configuration"
 	@echo -e "$(WARN_COLOR)- make config			: View docker-compose config and variables"
-	@echo -e "$(WARN_COLOR)- make changes			: Copy changes to app and api folders"
-	@echo -e "$(WARN_COLOR)- make condash			: Connect to dash container"
-	@echo -e "$(WARN_COLOR)- make congra			: Connect to grafana container"
-	@echo -e "$(WARN_COLOR)- make conki			: Connect to loki container"
-	@echo -e "$(WARN_COLOR)- make conginx			: Connect to nginx container"
-	@echo -e "$(WARN_COLOR)- make conpro			: Connect to prometheus container"
-	@echo -e "$(WARN_COLOR)- make conpt			: Connect to promtail container"
-	@echo -e "$(WARN_COLOR)- make conpg			: Connect to pushgateway container"
-	@echo -e "$(WARN_COLOR)- make conpos			: Connect to postgres container"
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env-file"
-	@echo -e "$(WARN_COLOR)- make localbuild		: Build dash container"
 	@echo -e "$(WARN_COLOR)- make logs			: Show dash logs"
 	@echo -e "$(WARN_COLOR)- make link			: Create app folder symlink"
 	@echo -e "$(WARN_COLOR)- make git			: Set user name and email to git"
@@ -44,10 +34,6 @@ help:
 	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
 	@echo -e "$(WARN_COLOR)- make rights			: Correctly rights for files"
 	@echo -e "$(WARN_COLOR)- make re			: Rebuild dash configuration"
-	@echo -e "$(WARN_COLOR)- make reall			: Rebuild all configuration"
-	@echo -e "$(WARN_COLOR)- make redash			: Rebuild dash configuration"
-	@echo -e "$(WARN_COLOR)- make reginx			: Rebuild nginx configuration"
-	@echo -e "$(WARN_COLOR)- make repos			: Rebuild postgres configuration"
 	@echo -e "$(WARN_COLOR)- make clean			: Cleaning configuration$(NO_COLOR)"
 
 build:
@@ -58,30 +44,6 @@ build:
 config:
 	@printf "$(ERROR_COLOR)==== View ${name} config ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml config
-
-changes:
-	@printf "$(ERROR_COLOR)==== Copy changes from repo... ====$(NO_COLOR)\n"
-	@bash ./scripts/copy_change.sh
-
-condash:
-	@printf "$(ERROR_COLOR)==== Connect to dash container... ====$(NO_COLOR)\n"
-	@docker exec -it dash bash
-
-congra:
-	@printf "$(ERROR_COLOR)==== Connect to grafana container... ====$(NO_COLOR)\n"
-	@docker exec -it grafana sh
-
-conki:
-	@printf "$(ERROR_COLOR)==== Connect to loki container... ====$(NO_COLOR)\n"
-	@docker exec -it loki sh
-
-conginx:
-	@printf "$(ERROR_COLOR)==== Connect to nginx container... ====$(NO_COLOR)\n"
-	@docker exec -it nginx sh
-
-conpos:
-	@printf "$(ERROR_COLOR)==== Connect to postgres container... ====$(NO_COLOR)\n"
-	@docker exec -it postgres sh
 
 down:
 	@printf "$(ERROR_COLOR)==== Stopping configuration ${name}... ====$(NO_COLOR)\n"
@@ -97,10 +59,6 @@ env:
 git:
 	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
 	@bash ./scripts/gituser.sh
-
-localbuild:
-	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
-	@bash ./scripts/build.sh
 
 logs:
 	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
@@ -120,35 +78,6 @@ re:
 	@printf "$(OK_COLOR)==== Rebuild dash... ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml down dash
 	@docker-compose -f ./docker-compose.yml up -d --no-deps --build dash
-
-reall: down
-	@printf "$(OK_COLOR)==== Rebuild configuration ${name}... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build
-
-redash:
-	@printf "$(OK_COLOR)==== Rebuild dash... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down dash
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build dash
-
-redashf:
-	@printf "$(OK_COLOR)==== Rebuild dash... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down dash
-	@docker-compose -f ./docker-compose.yml up -d --build --force-recreate dash
-
-reapi:
-	@printf "$(OK_COLOR)==== Rebuild sm_cognos_api... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down sm_cognos_api
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build sm_cognos_api
-
-reginx:
-	@printf "$(OK_COLOR)==== Rebuild nginx... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down nginx
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build nginx
-
-repos:
-	@printf "$(OK_COLOR)==== Rebuild postgres... ====$(NO_COLOR)\n"
-	@docker-compose -f ./docker-compose.yml down postgres
-	@docker-compose -f ./docker-compose.yml up -d --no-deps --build postgres
 
 ps:
 	@printf "$(BLUE)==== View configuration ${name}... ====$(NO_COLOR)\n"

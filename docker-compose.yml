@@ -2,17 +2,27 @@
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
+    image: $JENKINS_IMAGE
+    container_name: $JENKINS_NAME
     restart: unless-stopped
     ports:
-      - "8080:8080"    # веб-интерфейс
-      - "50000:50000"  # порт для агента
+      - "$JENKINS_PORT:8080"
+      - "$AGENT_PORT:50000"
     volumes:
-      - jenkins_home:/var/jenkins_home
+      - $JENKINS_HOME:/var/jenkins_home
     environment:
-      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false  # если хотите отключить мастер-установку
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=$MASTER_WIZARD
+    networks:
+      network:
+        ipv4_address: ${JENKINS_HOST}
 
-volumes:
-  jenkins_home:
-  
+networks:
+  network:
+    name: ${JENKINS_NET}
+    external: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${JENKINS_ADDR}
+          gateway: ${JENKINS_GATE}
+
