@@ -24,12 +24,14 @@ help:
 	@echo -e "$(OK_COLOR)==== All commands of ${name} configuration ====$(NO_COLOR)"
 	@echo -e "$(WARN_COLOR)- make				: Launch configuration"
 	@echo -e "$(WARN_COLOR)- make build			: Building configuration"
+	@echo -e "$(WARN_COLOR)- make con			: Connect to container"
 	@echo -e "$(WARN_COLOR)- make config			: View docker-compose config and variables"
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env-file"
+	@echo -e "$(WARN_COLOR)- make git			: Set user name and email to git"
 	@echo -e "$(WARN_COLOR)- make logs			: Show dash logs"
 	@echo -e "$(WARN_COLOR)- make link			: Create app folder symlink"
-	@echo -e "$(WARN_COLOR)- make git			: Set user name and email to git"
+	@echo -e "$(WARN_COLOR)- make net			: Create network"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
 	@echo -e "$(WARN_COLOR)- make rights			: Correctly rights for files"
@@ -40,6 +42,11 @@ build:
 	@printf "$(YELLOW)==== Building configuration ${name}... ====$(NO_COLOR)\n"
 	@docker-compose -f ./docker-compose.yml up -d --build
 	@docker-compose -f ./docker-compose.yml up -d --no-deps --build grafana
+
+
+con:
+	@printf "$(ERROR_COLOR)==== Copy changes from repo... ====$(NO_COLOR)\n"
+	@docker exec -it ${JENKINS_NAME} bash
 
 config:
 	@printf "$(ERROR_COLOR)==== View ${name} config ====$(NO_COLOR)\n"
@@ -67,6 +74,14 @@ logs:
 link:
 	@printf "$(YELLOW)==== App symlink... ====$(NO_COLOR)\n"
 	@bash ./scripts/symlink.sh
+
+net:
+	@printf "$(YELLOW)==== Создание сети для конфигурации ${name}... ====$(NO_COLOR)\n"
+	@docker network create \
+	  --driver=bridge \
+	  --subnet=$(JENKINS_ADDR) \
+	  --gateway=$(JENKINS_GATE) \
+	  $(JENKINS_NET)
 
 push:
 	@bash ./scripts/push.sh
