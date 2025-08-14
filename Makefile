@@ -14,6 +14,10 @@ CYAN='\e[1;36m'         # Cyan
 WHITE='\e[1;37m'        # White
 UCYAN='\e[4;36m'        # Cyan
 USER_ID = $(shell id -u)
+ifneq (,$(wildcard .env))
+    include .env
+    export $(shell sed 's/=.*//' .env)
+endif
 
 all:
 	@printf "Launch configuration ${name}...\n"
@@ -29,13 +33,13 @@ help:
 	@echo -e "$(WARN_COLOR)- make down			: Stopping configuration"
 	@echo -e "$(WARN_COLOR)- make env			: Create .env-file"
 	@echo -e "$(WARN_COLOR)- make git			: Set user name and email to git"
-	@echo -e "$(WARN_COLOR)- make logs			: Show dash logs"
+	@echo -e "$(WARN_COLOR)- make logs			: Show logs"
 	@echo -e "$(WARN_COLOR)- make link			: Create app folder symlink"
 	@echo -e "$(WARN_COLOR)- make net			: Create network"
 	@echo -e "$(WARN_COLOR)- make push			: Push changes to the github"
 	@echo -e "$(WARN_COLOR)- make ps			: View configuration"
 	@echo -e "$(WARN_COLOR)- make rights			: Correctly rights for files"
-	@echo -e "$(WARN_COLOR)- make re			: Rebuild dash configuration"
+	@echo -e "$(WARN_COLOR)- make re			: Rebuild configuration"
 	@echo -e "$(WARN_COLOR)- make clean			: Cleaning configuration$(NO_COLOR)"
 
 build:
@@ -67,9 +71,13 @@ git:
 	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
 	@bash ./scripts/gituser.sh
 
+log:
+	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
+	@docker logs ${JENKINS_NAME}
+
 logs:
 	@printf "$(YELLOW)==== ${name} logs... ====$(NO_COLOR)\n"
-	@docker logs dash
+	@docker logs ${JENKINS_NAME}
 
 link:
 	@printf "$(YELLOW)==== App symlink... ====$(NO_COLOR)\n"
