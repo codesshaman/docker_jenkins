@@ -10,19 +10,19 @@ services:
       - "$AGENT_PORT:50000"
     volumes:
       - $JENKINS_HOME:/var/jenkins_home
+    network_mode: host
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=$MASTER_WIZARD
-    networks:
-      network:
-        ipv4_address: ${JENKINS_HOST}
+#     networks:
+#       network:
+#         ipv4_address: ${JENKINS_HOST}
 
-networks:
-  network:
-    name: ${JENKINS_NET}
-    external: true
-    driver: bridge
-    ipam:
-      config:
-        - subnet: ${JENKINS_ADDR}
-          gateway: ${JENKINS_GATE}
-
+# networks:
+#   network:
+#     name: ${JENKINS_NET}
+#     external: true
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: ${JENKINS_ADDR}
+#           gateway: ${JENKINS_GATE}
