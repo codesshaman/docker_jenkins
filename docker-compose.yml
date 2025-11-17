@@ -10,9 +10,10 @@ services:
       - "$AGENT_PORT:50000"
     volumes:
       - $JENKINS_HOME:/var/jenkins_home
-    network_mode: host
+
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=$MASTER_WIZARD
+#    network_mode: host
 #     networks:
 #       network:
 #         ipv4_address: ${JENKINS_HOST}
